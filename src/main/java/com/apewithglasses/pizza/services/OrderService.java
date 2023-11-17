@@ -1,9 +1,12 @@
 package com.apewithglasses.pizza.services;
 
 import com.apewithglasses.pizza.persistence.entity.OrderEntity;
+import com.apewithglasses.pizza.persistence.projection.OrderSummary;
 import com.apewithglasses.pizza.persistence.repository.OrderRepository;
+import com.apewithglasses.pizza.services.dto.RandomOrderDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -35,5 +38,18 @@ public class OrderService {
     public List<OrderEntity> getOutsideOrders() {
         List<String> methods = Arrays.asList(DELIVERY, CARRYOUT);
         return this.orderRepository.findAllByMethodIn(methods);
+    }
+
+    public List<OrderEntity> getCustomerOrders(String idCustomer) {
+        return this.orderRepository.findCustomerOrders(idCustomer);
+    }
+
+    public OrderSummary getSummary(Integer orderId) {
+        return this.orderRepository.findSummary(orderId);
+    }
+
+    @Transactional
+    public boolean saveRandomOrder(RandomOrderDTO randomOrderDTO) {
+        return this.orderRepository.saveRandomOrder(randomOrderDTO.getIdCustomer(), randomOrderDTO.getMethod());
     }
 }
